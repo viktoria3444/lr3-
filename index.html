@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Функції JS Практика</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; background: #f0f0f0; }
+    h2 { color: #333; }
+    section { background: #fff; padding: 15px; margin-bottom: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+    input, button { padding: 8px; margin: 5px 0; }
+    button { cursor: pointer; }
+    #out { margin-top: 10px; font-weight: bold; }
+  </style>
+</head>
+<body>
+
+  <h1>Практика функцій у JavaScript</h1>
+
+  <!-- Рівень 4-6 -->
+  <section>
+    <h2>Привітання користувача</h2>
+    <input id="firstName" placeholder="Ім'я">
+    <input id="lastName" placeholder="Прізвище">
+    <input id="age" placeholder="Вік" type="number">
+    <button onclick="greetUser()">Привітати</button>
+    <div id="greetingOut"></div>
+  </section>
+
+  <section>
+    <h2>Оцінка студента</h2>
+    <input id="studentName" placeholder="Ім'я студента">
+    <input id="studentScore" placeholder="Бал (0-12)" type="number">
+    <button onclick="studentGrade()">Перевірити оцінку</button>
+    <div id="gradeOut"></div>
+  </section>
+
+  <section>
+    <h2>Обчислення чайових</h2>
+    <input id="billAmount" placeholder="Сума рахунку" type="number">
+    <input id="tipPercent" placeholder="Відсоток чайових" type="number">
+    <button onclick="calculateTipHandler()">Обчислити</button>
+    <div id="tipOut"></div>
+  </section>
+
+  <!-- Рівень 7-9 -->
+  <section>
+    <h2>Таймер з колбеком</h2>
+    <input id="timerMessage" placeholder="Повідомлення">
+    <input id="timerSeconds" placeholder="Секунди" type="number">
+    <button onclick="startGreetingTimerHandler()">Запустити таймер</button>
+  </section>
+
+  <section>
+    <h2>Калькулятор</h2>
+    <input id="calcA" placeholder="Число A" type="number">
+    <input id="calcB" placeholder="Число B" type="number">
+    <input id="calcOp" placeholder="Операція (+, -, *, /)">
+    <button onclick="calculateHandler()">Обчислити</button>
+  </section>
+
+  <section>
+    <h2>Лічильник кліків</h2>
+    <button id="clickCounterBtn">Натисни мене</button>
+  </section>
+
+  <!-- Рівень 10-12 -->
+  <section>
+    <h2>Генератор випадкових чисел</h2>
+    <input id="minValue" placeholder="Мінімум" type="number">
+    <input id="maxValue" placeholder="Максимум" type="number">
+    <button id="next">Next number</button>
+    <div id="out"></div>
+  </section>
+
+  <section>
+    <h2>Фіксування контексту методу</h2>
+    <input id="userName" placeholder="Ваше ім'я">
+    <button id="hello">Say</button>
+  </section>
+
+  <script>
+    // Рівень 4-6
+    function getFullName(firstName, lastName) {
+      return `${firstName} ${lastName}`;
+    }
+    function showGreeting(fullName, age) {
+      document.getElementById('greetingOut').textContent = `Hello, ${fullName}! You are ${age} years old.`;
+    }
+    function greetUser() {
+      const first = document.getElementById('firstName').value;
+      const last = document.getElementById('lastName').value;
+      const age = document.getElementById('age').value;
+      const fullName = getFullName(first, last);
+      showGreeting(fullName, age);
+    }
+
+    function getStudentInfo() {
+      const name = document.getElementById('studentName').value;
+      const score = parseInt(document.getElementById('studentScore').value);
+      return {name, score};
+    }
+    function checkGrade(score) {
+      if(score >=10) return "Excellent";
+      if(score >=7) return "Good";
+      if(score >=4) return "Satisfactory";
+      return "Fail";
+    }
+    function showResult(name, grade) {
+      document.getElementById('gradeOut').textContent = `Student: ${name}\nGrade: ${grade}`;
+    }
+    function studentGrade() {
+      const {name, score} = getStudentInfo();
+      const grade = checkGrade(score);
+      showResult(name, grade);
+    }
+
+    function calculateTip(amount, percent = 10) {
+      return amount * (percent / 100);
+    }
+    function showTipResult(amount, tip) {
+      document.getElementById('tipOut').textContent = `Bill: ${amount} грн\nTip (${tip/amount*100}%): ${tip} грн\nTotal: ${amount + tip} грн`;
+    }
+    function calculateTipHandler() {
+      const amount = parseFloat(document.getElementById('billAmount').value);
+      const percent = parseFloat(document.getElementById('tipPercent').value) || 10;
+      const tip = calculateTip(amount, percent);
+      showTipResult(amount, tip);
+    }
+
+    // Рівень 7-9
+    function startGreetingTimer(message, seconds, callback) {
+      setTimeout(() => {
+        alert(message);
+        callback();
+      }, seconds * 1000);
+    }
+    function startGreetingTimerHandler() {
+      const msg = document.getElementById('timerMessage').value;
+      const sec = parseInt(document.getElementById('timerSeconds').value);
+      startGreetingTimer(msg, sec, () => alert('Time is up!'));
+    }
+
+    function calculate(a, b, operation) {
+      switch(operation) {
+        case '+': return a + b;
+        case '-': return a - b;
+        case '*': return a * b;
+        case '/': return b!==0?a/b:'Cannot divide by zero';
+        default: return 'Invalid operation';
+      }
+    }
+    function calculateHandler() {
+      const a = parseFloat(document.getElementById('calcA').value);
+      const b = parseFloat(document.getElementById('calcB').value);
+      const op = document.getElementById('calcOp').value;
+      alert(`Result: ${calculate(a, b, op)}`);
+    }
+
+    function createClickCounter() {
+      let count = 0;
+      return () => {
+        count++;
+        console.log(`Click count: ${count}`);
+      }
+    }
+    const counter = createClickCounter();
+    document.getElementById('clickCounterBtn').onclick = counter;
+
+    // Рівень 10-12
+    function* randomGenerator(min, max) {
+      while(true) {
+        yield Math.floor(Math.random() * (max - min + 1)) + min;
+      }
+    }
+    let gen;
+    document.getElementById('next').onclick = () => {
+      const min = parseInt(document.getElementById('minValue').value);
+      const max = parseInt(document.getElementById('maxValue').value);
+      if(!gen || gen.min !== min || gen.max !== max) {
+        gen = randomGenerator(min, max);
+      }
+      document.getElementById('out').textContent = gen.next().value;
+    }
+
+    // Фіксування контексту
+    document.getElementById('hello').onclick = function() {
+      const name = document.getElementById('userName').value;
+      const user = {
+        name,
+        say() { alert(`Hello, ${this.name}`); }
+      };
+      user.say = user.say.bind(user);
+      user.say();
+    }
+  </script>
+</body>
+</html>
